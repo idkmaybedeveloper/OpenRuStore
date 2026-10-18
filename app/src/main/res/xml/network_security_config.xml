@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  RuStore serves its static content (APK payloads, icons, screenshots) from hosts whose
+  certificates are issued by the "Russian Trusted Root CA" (Mincifry), which is absent from the
+  Android system trust store. Without pinning that CA for rustore.ru every download and every
+  image request fails with a certificate path error, so the bundled PEM is added as an extra
+  trust anchor for that domain only. System anchors stay enabled because backapi.rustore.ru
+  itself is signed by a publicly trusted CA.
+  ref: https://www.gosuslugi.ru/crt
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+    <domain-config>
+        <domain includeSubdomains="true">rustore.ru</domain>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="@raw/russian_trusted_ca" />
+        </trust-anchors>
+    </domain-config>
+</network-security-config>
